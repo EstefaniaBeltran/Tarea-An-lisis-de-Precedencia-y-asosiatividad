@@ -1,12 +1,6 @@
-# Calculadora: Análisis de Precedencia y Asociatividad
-**Materia:** Lenguajes de Programación y Compiladores / Teoría de Lenguajes  
-**Estudiante:** Yeimy Beltrán  
+Análisis de Precedencia y Asociatividad
 
----
-
-## 📌 ¿De qué trata este proyecto?
-
-Este proyecto corresponde al desarrollo y análisis de **Gramáticas Libres de Contexto (GLC)** para una calculadora aritmética básica que opera con suma (`+`), resta (`-`), multiplicación (`*`) y división (`/`).
+En este taller creamos 4 gramaticas para una calculadora aritmética básica que opera con suma (`+`), resta (`-`), multiplicación (`*`) y división (`/`).
 
 El objetivo principal es diseñar, probar y validar cómo se controla el comportamiento del computador al evaluar expresiones matemáticas, manipulando deliberadamente:
 1. **Asociatividad por la izquierda** (comportamiento estándar: de izquierda a derecha).
@@ -18,7 +12,7 @@ A partir de estas condiciones, se construyen y prueban los **4 casos posibles** 
 
 ---
 
-## 🧠 Los 4 Casos de Estudio
+## Los 4 Casos de Estudio
 
 ### 1. Caso 1: Multiplicación y División Alta | Asociatividad Izquierda *(Estándar)*
 * **Lógica:** La suma/resta van en el nivel superior `E` (menor prioridad, se evalúan al final). La multiplicación/división van en `T` (mayor prioridad, se evalúan primero). Ambos niveles se llaman a sí mismos por el lado izquierdo.
@@ -28,7 +22,7 @@ A partir de estas condiciones, se construyen y prueban los **4 casos posibles** 
   T → T * F | T / F | F
   F → num
   ```
-* **Prueba rápida:** `10 - 4 - 2 = 4` y `2 + 3 * 4 = 14`.
+* **Prueba** 
 
 ---
 
@@ -40,8 +34,7 @@ A partir de estas condiciones, se construyen y prueban los **4 casos posibles** 
   T → T + F | T - F | F
   F → num
   ```
-* **Prueba rápida:** `2 * 3 + 4 = 14` *(hace primero 3 + 4 = 7 y luego 2 * 7)*.
-
+* **Prueba** 
 ---
 
 ### 3. Caso 3: Multiplicación y División Alta | Asociatividad Derecha
@@ -52,7 +45,7 @@ A partir de estas condiciones, se construyen y prueban los **4 casos posibles** 
   T → F * T | F / T | F
   F → num
   ```
-* **Prueba rápida:** `10 - 4 - 2 = 8` *(asocia 10 - (4 - 2) = 10 - 2 = 8)*.
+* **Prueba** 
 
 ---
 
@@ -64,18 +57,9 @@ A partir de estas condiciones, se construyen y prueban los **4 casos posibles** 
   T → F + T | F - T | F
   F → num
   ```
-* **Prueba rápida:** `10 - 4 - 2 = 8` y `2 * 3 + 4 = 14`.
+* **Prueba** 
 
 ---
-
-## 📊 Cuadro Comparativo de Resultados
-
-| Caso | Mayor Precedencia | Asociatividad | Prueba `10 - 4 - 2` | Prueba `2 * 3 + 4` |
-| :---: | :---: | :---: | :---: | :---: |
-| **Caso 1** | Multiplicación / División | Izquierda | **4** `((10 - 4) - 2)` | **10** `((2 * 3) + 4)` |
-| **Caso 2** | Suma / Resta | Izquierda | **4** `((10 - 4) - 2)` | **14** `(2 * (3 + 4))` |
-| **Caso 3** | Multiplicación / División | Derecha | **8** `(10 - (4 - 2))` | **10** `((2 * 3) + 4)` |
-| **Caso 4** | Suma / Resta | Derecha | **8** `(10 - (4 - 2))` | **14** `(2 * (3 + 4))` |
 
 ---
 
@@ -120,18 +104,8 @@ Para evaluar las operaciones escritas en el archivo de texto `t.expr`:
 java Calc t.expr
 ```
 
-### 4. (Opcional) Ver el Árbol Sintáctico en Interfaz Gráfica (GUI)
-Si deseas inspeccionar visualmente cómo el parser agrupa los nodos según la precedencia y la asociatividad, puedes usar el TestRig de ANTLR (`grun`):
 
-```bash
-# Para ingresar una expresión directamente por teclado y ver la ventana del árbol:
-java org.antlr.v4.gui.TestRig LabeledExpr prog -gui
-```
-*Luego escribe tu expresión (por ejemplo: `10 - 4 - 2`), presiona `Enter` y luego `Ctrl + D` (en Linux/Mac) para generar la gráfica del árbol.*
-
----
-
-## 📁 Estructura del Repositorio
+##  Estructura del Repositorio
 
 ```text
 ├── README.md                                         # Presentación y guía de ejecución
@@ -143,9 +117,4 @@ java org.antlr.v4.gui.TestRig LabeledExpr prog -gui
     └── t.expr                                        # Archivo de entrada con expresiones de prueba
 ```
 
----
-
-## 📝 Documento Teórico y Explicación Paso a Paso
-
-El análisis completo, la explicación detallada del por qué de la recursión izquierda/derecha y el árbol sintáctico se encuentran documentados en el PDF adjunto:
-📄 **[Tarea Análisis de Precedencia y asociatividad.pdf](Tarea%20Análisis%20de%20Precedencia%20y%20asociatividad.pdf)**
+El Documento Teórico y Explicación Paso a Paso se encuentra documentado en el PDF
