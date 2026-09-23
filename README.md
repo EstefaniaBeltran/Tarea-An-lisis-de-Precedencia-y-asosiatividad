@@ -63,7 +63,7 @@ A partir de estas condiciones, se construyen y prueban los **4 casos posibles** 
 
 ---
 
-## 🛠️ Requisitos Previos
+##  Requisitos Previos
 
 Para compilar y ejecutar las pruebas de este proyecto en tu máquina necesitas:
 
