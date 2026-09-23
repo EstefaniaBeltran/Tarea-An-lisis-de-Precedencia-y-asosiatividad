@@ -1,6 +1,6 @@
 # Analisis de Precedencia y Asociatividad
- 
-### Grupo 1: Ángel Arcos, Yeimy Beltrán, Nicolas Gutierrez y Samuel Lagos Prado
+
+### Grupo 1: Ángel Arcos, Yeimy Beltrán, Nicolas Gutiérrez y Samuel Lagos Prado
  
 Este taller creamos una calculadora aritmetica en ANTLR4 y Java para las operaciones basicas (+, -, *, /). El objetivo es comprobar como la configuracion de las reglas gramaticales define la precedencia de operadores y la asociatividad (izquierda o derecha).
  
@@ -69,7 +69,7 @@ java Calc t.expr
  
 ## 5. Resultados de las Pruebas
  
-Se ejecuto `java Calc t.expr` con 8 pruebas: 2 expresiones evaluadas en los 4 casos.
+Se ejecuto `java Calc t.expr` con 10 pruebas: 2 expresiones evaluadas en los 4 casos y 2 expresiones con parentesis.
  
 ```text
 c1: 10 - 4 - 2
@@ -81,6 +81,9 @@ c1: 2 * 3 + 4
 c2: 2 * 3 + 4
 c3: 2 * 3 + 4
 c4: 2 * 3 + 4
+ 
+c1: 10 - (4 - 2)
+c1: 2 * (3 + 4)
 ```
  
 Salida obtenida:
@@ -94,6 +97,8 @@ Salida obtenida:
 [Caso 2 | Suma Alta, Izquierda] 2*3+4 = 14
 [Caso 3 | Mult Alta, Derecha]   2*3+4 = 10
 [Caso 4 | Suma Alta, Derecha]   2*3+4 = 14
+[Caso 1 | Mult Alta, Izquierda] 10-(4-2) = 8
+[Caso 1 | Mult Alta, Izquierda] 2*(3+4) = 14
 ```
  
 Resumen:
@@ -103,6 +108,13 @@ Resumen:
 | `10 - 4 - 2` | 4  | 4  | 8  | 8  |
 | `2 * 3 + 4`  | 10 | 14 | 10 | 14 |
  
+Con parentesis (ejecutadas en c1, que sin parentesis daba 4 y 10 para estas mismas expresiones):
+ 
+| Expresion (c1)    | Sin parentesis | Con parentesis |
+|-------------------|---------------:|---------------:|
+| `10 - (4 - 2)`    | 4              | 8              |
+| `2 * (3 + 4)`     | 10             | 14             |
+ 
 Agrupacion real que genera ANTLR4 (obtenida con `grun Calculadora prog -tree`):
  
 | Expresion    | Caso | Agrupacion       | Valor |
@@ -111,6 +123,8 @@ Agrupacion real que genera ANTLR4 (obtenida con `grun Calculadora prog -tree`):
 | `10 - 4 - 2` | c3   | `10 - (4 - 2)`   | 8     |
 | `2 * 3 + 4`  | c1   | `(2 * 3) + 4`    | 10    |
 | `2 * 3 + 4`  | c2   | `2 * (3 + 4)`    | 14    |
+| `10 - (4 - 2)` | c1 | `10 - (4 - 2)`   | 8     |
+| `2 * (3 + 4)`  | c1 | `2 * (3 + 4)`    | 14    |
  
 ### Analisis de Resultados:
  
@@ -120,12 +134,15 @@ Los dos operadores son `-`, del mismo nivel, asi que la precedencia no decide na
 **2. `2 * 3 + 4`: aqui solo importa la precedencia.**
 Hay un `*` y un `+`, cada uno una sola vez, asi que no hay dos operadores iguales seguidos y la asociatividad no interviene. Cuando `*` y `/` tienen mayor precedencia (c1 y c3) se obtiene `(2 * 3) + 4 = 10`. Cuando la tienen `+` y `-` (c2 y c4) se obtiene `2 * (3 + 4) = 14`. Por eso aqui c1 = c3 y c2 = c4.
  
-**3. Como lo resuelve ANTLR4.**
+**3. Con parentesis se anulan la precedencia y la asociatividad.**
+En c1, `10 - 4 - 2` daba 4 y `2 * 3 + 4` daba 10. Al agregar parentesis, `10 - (4 - 2)` da 8 (el mismo valor que la asociatividad derecha de c3 daba sin parentesis) y `2 * (3 + 4)` da 14 (el mismo valor que la precedencia de la suma de c2 daba sin parentesis). Es decir, con parentesis se puede forzar a mano en c1 lo que otros casos hacen por defecto. Esto ocurre porque la alternativa `'(' expr ')'` forma un subarbol que se evalua completo antes de combinarlo con el resto, sin importar como este configurada la regla. Esa alternativa (`Parens1` a `Parens4`) es identica en las cuatro reglas, por lo que el efecto es el mismo en c2, c3 y c4.
+ 
+**4. Como lo resuelve ANTLR4.**
 - La precedencia la define el **orden de las alternativas** en la regla: la que aparece primero tiene mayor precedencia. Por eso `expr1` (multiplicacion primero) y `expr2` (suma primero) dan resultados distintos en `2 * 3 + 4`.
 - La asociatividad por defecto es izquierda. Con `<assoc=right>` (casos 3 y 4) el arbol se forma hacia la derecha, como se ve en `10 - (4 - 2)`.
 - `*` y `/` estan en una sola alternativa (`op=('*'|'/')`), igual que `+` y `-`, por lo que comparten el mismo nivel de precedencia.
 **Conclusion.**
-La precedencia y la asociatividad son configuraciones independientes: la primera decide entre operadores *distintos* y la segunda entre operadores *iguales* (del mismo nivel). Las 8 pruebas confirman que las 4 variantes de la gramatica se comportan como se espera.
+La precedencia y la asociatividad son configuraciones independientes: la primera decide entre operadores *distintos* y la segunda entre operadores *iguales* (del mismo nivel). Los parentesis, por su parte, anulan ambas configuraciones para la parte que encierran. Las 10 pruebas confirman que las 4 variantes de la gramatica se comportan como se espera.
  
 ## 6. Estructura de Archivos
  
@@ -135,6 +152,5 @@ La precedencia y la asociatividad son configuraciones independientes: la primera
 - `t.expr`: Archivo con expresiones de prueba.
 - `README.md`: Documentacion tecnica de ejecucion.
 - `../Tarea Análisis de Precedencia y asociatividad.pdf`: Documento formal teorico.
- 
 - `README.md`: Documentacion tecnica de ejecucion.
 - `../Tarea Análisis de Precedencia y asociatividad.pdf`: Documento formal teorico.
