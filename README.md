@@ -1,4 +1,4 @@
-Análisis de Precedencia y Asociatividad
+## Análisis de Precedencia y Asociatividad
 
 En este taller creamos 4 gramaticas para una calculadora aritmética básica que opera con suma (`+`), resta (`-`), multiplicación (`*`) y división (`/`).
 
@@ -78,7 +78,7 @@ Para compilar y ejecutar las pruebas de este proyecto en tu máquina necesitas:
 
 ---
 
-## 🚀 ¿Cómo compilar y ejecutar el proyecto?
+## ¿Cómo compilar y ejecutar el proyecto?
 
 Abre una terminal en la carpeta del proyecto donde se encuentran la gramática `.g4`, los archivos Java y el archivo de prueba `t.expr`:
 
